@@ -1,5 +1,12 @@
 import numpy as np
 from scipy.linalg import solve
+import random
+import binascii
+
+noise_prob = 0.05
+
+def decision(probability):
+    return random.random() < probability
 
 print(" ")
 toControlMessage = raw_input("Enter a message: \n")
@@ -37,3 +44,74 @@ for j in range(len(binarizedLetters)):
     binarizedLettersWithParityBits.append(binarizedLetters[j] + str(parities[j]))
 print(binarizedLettersWithParityBits)
 print("")
+
+print("")
+print("Jamming...")
+print("---------------------------------------")
+jammed = []
+for letter in binarizedLettersWithParityBits:
+    if decision(noise_prob):
+        print("Jam!")
+        controlledMessage = letter
+        to_switch = random.randint(0,len(controlledMessage)-1)
+        if (controlledMessage[to_switch] == '1'):
+            new = list(controlledMessage)
+            new[to_switch] = '0'
+            jammed.append(''.join(new))
+        elif (controlledMessage[to_switch] == '0'):
+            new = list(controlledMessage)
+            new[to_switch] = '1'
+            jammed.append(''.join(new))
+    else:
+        jammed.append(letter)
+print(jammed)
+print("")
+
+print("")
+print("Decoding...")
+print("---------------------------------------")
+decoded = []
+new_parities = []
+
+for letter in jammed:
+    new_parities.append(int(letter[-1]))
+    decoded.append(letter[0:-1])
+
+print(decoded)
+print("")
+
+print("")
+print("Message received!")
+print("---------------------------------------")
+final = []
+ret = ""
+for message in decoded:
+    let = (chr(int(message, 2)))
+    final.append(let)
+    ret = ''.join(final)
+
+print(ret)
+print("")
+
+print("")
+print("Error detection:")
+print("---------------------------------------")
+errs = []
+j = 0
+for message in decoded:
+    i = 0
+    for bit in message:
+        val = int(bit)
+        if val == 1:
+            i+=1
+    if i%2 == 0 and new_parities[j] == 0:
+        errs.append(False)
+    elif i%2 == 1 and new_parities[j] == 1:
+        errs.append(False)
+    else:
+        errs.append(True)
+    j+=1
+
+errors_detected_idx = [i for i, x in enumerate(errs) if x]
+for e_id in errors_detected_idx:
+    print("ERROR: " + final[e_id])
