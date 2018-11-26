@@ -2,6 +2,7 @@ import numpy as np
 from scipy.linalg import solve
 import random
 import binascii
+import time 
 
 noise_prob = 0.05
 
@@ -90,6 +91,8 @@ for message in decoded:
     final.append(let)
     ret = ''.join(final)
 
+# wait 10 ms for every bit in the codeword (80 ms/byte)
+time.sleep((len(''.join(decoded))*10)/1000)
 print(ret)
 print("")
 
