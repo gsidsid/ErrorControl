@@ -21,12 +21,12 @@ body {
 }
 
 .h1, h1 {
-    font-size: 190%;
+    font-size: 190% !important;
     margin-top: 8%;
 } 
 
 p {
-  margin-top: 25px;
+  margin-top: 25px !important;
 }
 
 text {
