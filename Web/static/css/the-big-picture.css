@@ -21,13 +21,12 @@ body {
 }
 
 .h1, h1 {
-    font-size: 200%;
+    font-size: 190%;
     margin-top: 8%;
 } 
 
-.node text {
-  pointer-events: none;
-  font-size: 10px;
+p {
+  margin-top: 25px;
 }
 
 text {
