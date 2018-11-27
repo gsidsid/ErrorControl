@@ -5,11 +5,11 @@ application = flask.Flask(__name__)
 
 @application.route('/')
 def serve():
-    return flask.render_template("index.html", nodes=nodes, links=links)
+    return flask.render_template("index.html")
 
 @application.route('/index.html')
 def returnHome():
-    return flask.render_template("index.html", nodes=nodes, links=links)
+    return flask.render_template("index.html")
 
 if __name__ == '__main__':
     import os
