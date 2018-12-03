@@ -12,7 +12,7 @@
 
     <!-- Materials -->
     <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="{{ url_for('static', filename='css/materialize.min.css') }}" rel="stylesheet" >
     
     <!-- Compiled and miifed JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
@@ -66,6 +66,42 @@
       <div class="row">
         <div class="input-field col s12">
           <input id="message">
+        </div>
+      </div>
+      <div>
+        <img src="/static/flow.png">
+      </div>
+      <div>
+        <div class="row">
+        <label class="mdc-floating-label" for="paritycheck">Parity Check</label>
+          <input type="text" width="100px" readonly="readonly" style="
+    width: 20%;
+    margin-left: 6%;
+    margin-right: 7%;
+" id="paritycheck" label="Parity Check" style="
+    margin-right: -10%;
+    margin-left: 6%;
+"/>
+
+        <label class="mdc-floating-label" for="hadamard" style="
+    margin-right: -6%;
+    margin-left: -1%;
+">Hadamard Matrix</label>
+          <input type="text" width="100px" readonly="readonly" style="
+    width: 20%;
+    margin-right: 6%;
+" id="hadamard" label="Hadamard Matrices"/>
+
+        <label class="mdc-floating-label" for="hamming" style="
+    margin-right: -5.5%;
+    margin-left: 2%;
+">Hamming Code</label>
+          <input type="text" readonly="readonly" style="
+    width: 20%;
+    margin-right: 50px;
+" id="hamming" label="Hamming Codes"/>
+
+
         </div>
       </div>
     </section>
