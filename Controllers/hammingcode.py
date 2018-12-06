@@ -27,15 +27,20 @@ def getCodewords(inputchar):
     C2 = np.dot(M[1],G) % 2
     codes = [C1, C2]
     print('Original Codewords: {}'.format(codes))
-    
+
     return codes
 
-def noise(codeword):
+def noise(codeword, probability):
     R = codeword
-    # Random Error
-    error = random.randint(0,6)
-    R[error] = (R[error] + 1) % 2
-    print('Noisy Message: {} Error: Position {}'.format(R, error))
+    # Random Error Depending on probability
+    error = []
+    errorcount = 0
+    for x in range(0,6):
+        if random.randint(0,100) < probability:
+            error = error + [x]
+            R[x] = (R[x] + 1) % 2
+            errorcount += 1
+    print('Noisy Message: {} Error: Positions {}'.format(R, error))
     return R
 
 def decode(received):
@@ -45,7 +50,7 @@ def decode(received):
         [1,1,0,1,0,0,1]])
 
     Ht = np.transpose(H)
-    
+
     ## Syndromes Calculated with Venn Diagram Equations
     S1 = R[0] + R[1] + R[2] + R[4]
     S2 = R[0] + R[2] + R[3] + R[5]
@@ -57,6 +62,8 @@ def decode(received):
 
     ## Syndrome calculated with rHt
     Sv = np.dot(R, Ht) % 2
+    # if Sv != [0,0,0]:
+    #     print('Error Detected')
     elocation = -1
     ## Find matching column index in parity matrix
     for i in range(0,7):
@@ -73,7 +80,7 @@ def decode(received):
 
     ## correcting error
     if elocation == -1:
-        print('ERROR NOT FOUND')
+        print('ERROR NOT CORRECTED')
         R[elocation] = (R[elocation]) % 2
     else:
         R[elocation] = (R[elocation] + 1) % 2
@@ -95,8 +102,8 @@ def processMessage(message):
     decodemessage = ''
     for letter in message:
         A = getCodewords(letter)
-        code1 = noise(A[0])
-        code2 = noise(A[1])
+        code1 = noise(A[0], 10)
+        code2 = noise(A[1], 10)
         result = translate([decode(code1), decode(code2)])
         decodemessage += result
     print('\nYour message was {0}'.format(decodemessage))
