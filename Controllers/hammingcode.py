@@ -11,55 +11,57 @@ def getCodewords(inputchar):
 
     # Message
     binary_m = format(ord(inputchar), 'b')
+    if len(binary_m) < 8:
+        pad = '0'
+        binary_m = (8 - len(binary_m)) * pad + binary_m
     m = np.array([[0,0,0,0,0,0,0,0]])
-    print(binary_m)
-    for i in range(0,7):
+    print('\n{}'.format(binary_m))
+    for i in range(0,8):
         m[0][i] = binary_m[i]
-    print(m)
+
     M = np.array([[0,0,0,0],[0,0,0,0]])
-    print(m[0][4:8])
     M[0] = np.array(m[0][0:4])
     M[1] = np.array(m[0][4:8])
-    print(M)
     # Codeword
     C1 = np.dot(M[0],G) % 2
     C2 = np.dot(M[1],G) % 2
-    print('Original Codewords:')
-    print(C1, C2)
+    codes = [C1, C2]
+    print('Original Codewords: {}'.format(codes))
+    
+    return codes
 
-    return (C1, C2)
-
-def noise(codewords):
+def noise(codeword):
+    R = codeword
     # Random Error
     error = random.randint(0,6)
-    # print(R[0][error], error)
-    R[0][error] = (R[0][error] + 1) % 2
-    print(R[0][error], error)
-    print(R)
+    R[error] = (R[error] + 1) % 2
+    print('Noisy Message: {} Error: Position {}'.format(R, error))
+    return R
 
 def decode(received):
+    R = received
     H = np.array([[1,1,1,0,1,0,0],
         [1,0,1,1,0,1,0],
         [1,1,0,1,0,0,1]])
 
     Ht = np.transpose(H)
-
-    # Syndromes Calculated with Venn Diagram Equations
-    S1 = R[0][0] + R[0][1] + R[0][2] + R[0][4]
-    S2 = R[0][0] + R[0][2] + R[0][3] + R[0][5]
-    S3 = R[0][0] + R[0][1] + R[0][3] + R[0][6]
+    
+    ## Syndromes Calculated with Venn Diagram Equations
+    S1 = R[0] + R[1] + R[2] + R[4]
+    S2 = R[0] + R[2] + R[3] + R[5]
+    S3 = R[0] + R[1] + R[3] + R[6]
     S1 = S1 % 2
     S2 = S2 % 2
     S3 = S3 % 2
     S = [[S1, S2, S3]]
 
-    # Syndrome calculated with rHt
+    ## Syndrome calculated with rHt
     Sv = np.dot(R, Ht) % 2
-
-    # Find matching column index in parity matrix
-    for i in range(0,6):
-        if np.all(Ht[i][:]==Sv[0]): # rHt syndrome
-            print(Ht[i], i)
+    elocation = -1
+    ## Find matching column index in parity matrix
+    for i in range(0,7):
+        if np.all(Ht[i][:]==Sv): # rHt syndrome
+            print('Error detected in position {}'.format(i))
             elocation = i
         else:
             continue
@@ -69,11 +71,35 @@ def decode(received):
     #     else:
     #         continue
 
-    # correcting error
-    R[0][elocation] = (R[0][elocation] + 1) % 2
-    print(R)
+    ## correcting error
+    if elocation == -1:
+        print('ERROR NOT FOUND')
+        R[elocation] = (R[elocation]) % 2
+    else:
+        R[elocation] = (R[elocation] + 1) % 2
+    print('Corrected Codeword: {}'.format(R))
 
-    decoded = R[0][:4] # message is first four bits
-    print(decoded)
+    decoded = R[:4] # message is first four bits
 
-getCodewords('h')
+    return decoded
+
+def translate(decodemsgs):
+    binstr = ''.join(str(x) for x in decodemsgs[0])
+    binstr = binstr + ''.join(str(x) for x in decodemsgs[1])
+    translatedcode = chr(int(binstr,2))
+
+    return translatedcode
+
+def processMessage(message):
+    print('Encoding and Decoding "{}"'.format(message))
+    decodemessage = ''
+    for letter in message:
+        A = getCodewords(letter)
+        code1 = noise(A[0])
+        code2 = noise(A[1])
+        result = translate([decode(code1), decode(code2)])
+        decodemessage += result
+    print('\nYour message was {0}'.format(decodemessage))
+    return decodemessage
+
+processMessage('Hello')
