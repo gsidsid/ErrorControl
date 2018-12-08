@@ -29,6 +29,13 @@ _, inds = sympy.Matrix(C8).T.rref()
 
 squareBasis = C8[[inds]]
 
+# Parity matrix
+P = np.array([[1,1,1,0,0,0,0],
+            [1,1,0,0,1,1,0,0],
+            [1,0,1,0,1,0,1,0],
+            [0,1,1,0,1,0,0,1]]])
+Pt = np.transpose(P)
+
 # print(C8[1])
 # print(C8[2])
 # print((C8[1]+C8[2])%2)
