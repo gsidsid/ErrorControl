@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.linalg import solve
+import sympy
 import random
 import binascii
 import time
@@ -10,8 +11,7 @@ H2 = np.array([[1,1],
               [1,-1]])
 H4 = np.kron(H2,H2)
 H8 = np.kron(H4,H2)
-H16 = np.kron(H4,H4)
-H128 = np.kron(H16,H8)
+# H16 = np.kron(H4,H4)
 
 
 #How to make -1 into zeroes
@@ -21,7 +21,38 @@ z[z == -1] = 0
 # print(z)
 
 #Creating codeword matrix, has 256 rows
-C128 = np.concatenate((H128,-H128))
+C8 = np.concatenate((H8,-H8))
+C8[C8 == -1] = 0
+
+# Find the basis for the matrix
+_, inds = sympy.Matrix(C8).T.rref()
+
+squareBasis = C8[[inds]]
+
+# print(C8[1])
+# print(C8[2])
+# print((C8[1]+C8[2])%2)
+
+# print(C8)
+
+practice = np.array([[1, 1, 0, 0, 1, 1, 0, 0],
+                    [1, 0, 0, 1, 1, 0, 0, 1],
+                    [0, 0, 1, 1, 1, 1, 0, 0],
+                    [0, 1, 1, 0, 0, 1, 1, 0]])
+
+# print(sympy.Matrix(practice).T.rref())
+
+
+generator2 = np.array([[0, 1, 1, 1, 1, 0, 0, 0],
+                    [1, 0, 1, 1, 0, 1, 0, 0],
+                    [1, 1, 0, 1, 0, 0, 1, 0],
+                    [1, 1, 1, 0, 0, 0, 0, 1]])
+
+messages = np.zeros((4,16))
+
+print(messages)
+
+# print(np.linalg.det(C8[[inds]]))
 
 
 # noise_prob = 0.05
