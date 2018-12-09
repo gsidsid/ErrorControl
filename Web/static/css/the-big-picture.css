@@ -98,9 +98,9 @@ input:not([type]):disabled, input:not([type])[readonly="readonly"], input[type=t
 
 input[type=range] {
         border: 1px solid white;
-    width: 77.4%;
-    margin-top: 2%;
-    margin-left: -1%;
+    width: 77.4% !important;
+    margin-top: 2% !important;
+    margin-left: -1% !important;
 }
 
 input[type=range]+.thumb {
@@ -112,13 +112,13 @@ input[type=range]+.thumb {
     width: 0;
     border-radius: 50%;
     background-color: #26a69a;
-    margin-left: 7px;
+    margin-left: 7px !important;
     -webkit-transform-origin: 50% 50%;
     transform-origin: 50% 50%;
     -webkit-transform: rotate(-45deg);
     transform: rotate(-45deg);
     /* background-color: white; */
     /* right: 11px; */
-    left: 5px;
-    margin-top: 10%;
+    left: 5px !important;
+    margin-top: 10% !important;
 }
