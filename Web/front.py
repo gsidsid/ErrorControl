@@ -29,7 +29,7 @@ def submit():
     print(parityCheckWeb.parityCheck(message,noise=noise))
     res_a = parityCheckWeb.parityCheck(message,noise=noise)
     res_b = hadamard.hadamardDecoding(message,probability=noise)
-    res_c = hammingcode.processMessage(message)
+    res_c = hammingcode.hamming(message,noise)
     return flask.render_template("index.html", result=message, noisy=noise*500, a=res_a, b=res_b, c=res_c)
 
 if __name__ == '__main__':
