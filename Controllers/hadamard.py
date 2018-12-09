@@ -81,7 +81,7 @@ def noise(codeword, probability):
     error = []
     errorcount = 0
     for x in range(0,8):
-        if random.randint(0,100) < probability:
+        if random.random() < probability:
             error = error + [x]
             R[x] = (R[x] + 1) % 2
             errorcount += 1
@@ -138,17 +138,23 @@ def translate(decodemsgs):
 
     return translatedcode
 
-def processMessage(message):
+def processMessage(message, probability):
     print('Encoding and Decoding "{}"'.format(message))
     decodemessage = ''
     for letter in message:
         A = getCodewords(letter)
-        code1 = noise(A[0], 10)
-        code2 = noise(A[1], 10)
+        code1 = noise(A[0], probability)
+        code2 = noise(A[1], probability)
         print(code1, code2)
         result = translate([decode(code1), decode(code2)])
         decodemessage += result
     print('\nYour message was {0}'.format(decodemessage))
     return decodemessage
 
-processMessage("Hello")
+def returnMessage(message, probability):
+    decodedMessage = processMessage(message, probability)
+    errorLocs = []
+    for i in range(len(message)):
+        if message[i] != decodedMessage[i]:
+            errorLocs.append(i)
+    return [decodedMessage, errorLocs]
