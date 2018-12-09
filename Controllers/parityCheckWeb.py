@@ -71,5 +71,3 @@ def parityCheck(message, noise=0.05):
         j+=1
     errors_detected_idx = [i for i, x in enumerate(errs) if x]
     return [ret, errors_detected_idx]
-
-print(parityCheck("TEST THIS", 0.04))

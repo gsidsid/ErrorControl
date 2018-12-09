@@ -65,7 +65,9 @@
       </div>
       <div class="row">
         <div class="input-field col s12">
-          <input id="message">
+          <form action="{{ url_for('submit') }}" method="post">
+              <input name="message" id="message" value="{{ result }}">
+          </form>
         </div>
       </div>
       <div>
@@ -84,7 +86,7 @@
 " id="paritycheck" label="Parity Check" style="
     margin-right: -10%;
     margin-left: 6%;
-"/>
+" value="{{ a }}" />
 
         <label class="mdc-floating-label" for="hadamard" style="
     margin-right: -6%;
