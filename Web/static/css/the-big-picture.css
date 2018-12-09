@@ -97,10 +97,10 @@ input:not([type]):disabled, input:not([type])[readonly="readonly"], input[type=t
 }
 
 input[type=range] {
-        border: 1px solid white;
-    width: 77.4% !important;
+    border: 1px solid white;
+    width: 75.2% !important;
     margin-top: 2% !important;
-    margin-left: -1% !important;
+    margin-left: -0.1% !important;
 }
 
 input[type=range]+.thumb {
@@ -119,6 +119,6 @@ input[type=range]+.thumb {
     transform: rotate(-45deg);
     /* background-color: white; */
     /* right: 11px; */
-    left: 5px !important;
+    left: 5px;
     margin-top: 10% !important;
 }
