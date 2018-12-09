@@ -13,166 +13,142 @@ H4 = np.kron(H2,H2)
 H8 = np.kron(H4,H2)
 # H16 = np.kron(H4,H4)
 
-
-#How to make -1 into zeroes
-z = np.array([[1, 1, -1, 1],
-            [1, 1, -1, 1]])
-z[z == -1] = 0
-# print(z)
-
-#Creating codeword matrix, has 256 rows
+#Creating codeword matrix
 C8 = np.concatenate((H8,-H8))
 C8[C8 == -1] = 0
 
-# Find the basis for the matrix
-_, inds = sympy.Matrix(C8).T.rref()
+#All possible messages:
+# messages = np.array([[0,0,0,0],[0,0,0,1],[0,0,1,0],[0,1,0,0],
+#                       [0,0,1,1],[0,1,0,1],[0,1,1,0],[0,1,1,1],
+#                       [1,0,0,0],[1,0,0,1],[1,0,1,0],[1,1,0,0],
+#                       [1,0,1,1],[1,1,0,1],[1,1,1,0],[1,1,1,1]])
 
-squareBasis = C8[[inds]]
 
-# Parity matrix
-P = np.array([[1,1,1,0,0,0,0],
-            [1,1,0,0,1,1,0,0],
-            [1,0,1,0,1,0,1,0],
-            [0,1,1,0,1,0,0,1]]])
+# Creating Generator Matrix and row reduced version
+G = np.array([[1,1,1,1,1,1,1,1],
+            [0,0,0,0,1,1,1,1],
+            [0,0,1,1,0,0,1,1],
+            [0,1,0,1,0,1,0,1]])
+reduced, _ = sympy.Matrix(G).rref()
+# reduced = np.array(sympy.Matrix.tolist(reduced)).astype(np.float64)%2
+Greduced = np.array([[1,0,0,1,0,1,1,0],
+                      [0,1,0,1,0,1,0,1],
+                      [0,0,1,1,0,0,1,1],
+                      [0,0,0,0,1,1,1,1]])
+
+# Parity check matrix
+P = np.array([[1,1,1,1,0,0,0,0],
+              [1,1,0,0,1,1,0,0],
+              [1,0,1,0,1,0,1,0],
+              [0,1,1,0,1,0,0,1]])
 Pt = np.transpose(P)
 
-# print(C8[1])
-# print(C8[2])
-# print((C8[1]+C8[2])%2)
-
-# print(C8)
-
-practice = np.array([[1, 1, 0, 0, 1, 1, 0, 0],
-                    [1, 0, 0, 1, 1, 0, 0, 1],
-                    [0, 0, 1, 1, 1, 1, 0, 0],
-                    [0, 1, 1, 0, 0, 1, 1, 0]])
-
-# print(sympy.Matrix(practice).T.rref())
+#Check that all codewords are valid with parity check
+# for message in messages:
+#     codeword = np.dot(message,Greduced) % 2
+#     print(codeword)
+#     print(np.dot(codeword, Pt) % 2)
 
 
-generator2 = np.array([[0, 1, 1, 1, 1, 0, 0, 0],
-                    [1, 0, 1, 1, 0, 1, 0, 0],
-                    [1, 1, 0, 1, 0, 0, 1, 0],
-                    [1, 1, 1, 0, 0, 0, 0, 1]])
+def getCodewords(inputchar):
+    # Message
+    #Ensures the message is length 8
+    binary_m = format(ord(inputchar), 'b')
+    if len(binary_m) < 8:
+        pad = '0'
+        binary_m = (8 - len(binary_m)) * pad + binary_m
 
-messages = np.zeros((4,16))
+    m = np.array([[0,0,0,0,0,0,0,0]])
+    print('\n{}'.format(binary_m))
+    for i in range(0,8):
+        m[0][i] = binary_m[i]
 
-print(messages)
+    M = np.array([[0,0,0,0],[0,0,0,0]])
+    M[0] = np.array(m[0][0:4])
+    M[1] = np.array(m[0][4:8])
+    # Codeword
+    C1 = np.dot(M[0],Greduced) % 2
+    C2 = np.dot(M[1],Greduced) % 2
+    codes = [C1, C2]
+    print('Original Codewords: {}'.format(codes))
 
-# print(np.linalg.det(C8[[inds]]))
+    return codes
 
 
-# noise_prob = 0.05
-#
-# def decision(probability):
-#     return random.random() < probability
-#
-# print(" ")
-# toControlMessage = input("Enter a message: \n")
-# binarizedMessage = ' '.join(format(ord(x), '08b') for x in toControlMessage)
-# print("")
-# print("Converted to binary: ")
-# print("---------------------------------------")
-# print(binarizedMessage)
-# print("")
-# binarizedLetters = [format(ord(x), 'b') for x in toControlMessage]
-# parities = []
-#
-# for letter in binarizedLetters:
-#     parity = 0
-#     i = 0
-#     for bit in letter:
-#         val = int(bit)
-#         if val == 1:
-#             i+=1
-#     if i % 2 != 0:
-#         parity = 1
-#     parities.append(parity)
-#
-# print("")
-# print("Calculated parities: ")
-# print("---------------------------------------")
-# print(parities)
-# print("")
-#
-# print("")
-# print("Appending parities. This will make the number of ones in each bitstring even.")
-# print("---------------------------------------")
-# binarizedLettersWithParityBits = []
-# for j in range(len(binarizedLetters)):
-#     binarizedLettersWithParityBits.append(binarizedLetters[j] + str(parities[j]))
-# print(binarizedLettersWithParityBits)
-# print("")
-#
-# print("")
-# print("Jamming...")
-# print("---------------------------------------")
-# jammed = []
-# for letter in binarizedLettersWithParityBits:
-#     if decision(noise_prob):
-#         print("Jam!")
-#         controlledMessage = letter
-#         to_switch = random.randint(0,len(controlledMessage)-1)
-#         if (controlledMessage[to_switch] == '1'):
-#             new = list(controlledMessage)
-#             new[to_switch] = '0'
-#             jammed.append(''.join(new))
-#         elif (controlledMessage[to_switch] == '0'):
-#             new = list(controlledMessage)
-#             new[to_switch] = '1'
-#             jammed.append(''.join(new))
-#     else:
-#         jammed.append(letter)
-# print(jammed)
-# print("")
-#
-# print("")
-# print("Decoding...")
-# print("---------------------------------------")
-# decoded = []
-# new_parities = []
-#
-# for letter in jammed:
-#     new_parities.append(int(letter[-1]))
-#     decoded.append(letter[0:-1])
-#
-# print(decoded)
-# print("")
-#
-# print("")
-# print("Message received!")
-# print("---------------------------------------")
-# final = []
-# ret = ""
-# for message in decoded:
-#     let = (chr(int(message, 2)))
-#     final.append(let)
-#     ret = ''.join(final)
-#
-# # wait 10 ms for every bit in the codeword (80 ms/byte)
-# time.sleep((len(''.join(decoded))*10)/1000)
-# print(ret)
-# print("")
-#
-# print("")
-# print("Error detection:")
-# print("---------------------------------------")
-# errs = []
-# j = 0
-# for message in decoded:
-#     i = 0
-#     for bit in message:
-#         val = int(bit)
-#         if val == 1:
-#             i+=1
-#     if i%2 == 0 and new_parities[j] == 0:
-#         errs.append(False)
-#     elif i%2 == 1 and new_parities[j] == 1:
-#         errs.append(False)
-#     else:
-#         errs.append(True)
-#     j+=1
-#
-# errors_detected_idx = [i for i, x in enumerate(errs) if x]
-# for e_id in errors_detected_idx:
-#     print("ERROR: " + final[e_id])
+def noise(codeword, probability):
+    R = codeword
+    # Random Error Depending on probability
+    error = []
+    errorcount = 0
+    for x in range(0,8):
+        if random.randint(0,100) < probability:
+            error = error + [x]
+            R[x] = (R[x] + 1) % 2
+            errorcount += 1
+    print('Noisy Message: {} Error: Positions {}'.format(R, error))
+    return R
+
+
+def mapToMessage(codeword):
+    codeword = codeword.astype(np.int64)
+    #Indices 1,2,3, and 5 make up the message
+    message = np.array([0,0,0,0])
+    #Grab first 4 bits from the codeword
+    message += codeword[:4]
+    #replace the 4th bit with the codeword's 5th bit
+    message[3] = codeword[4]
+
+    return message
+
+def decode(received):
+    #Recieved codeword
+    R = received
+    decoded = None
+
+    ## Syndrome calculated with rHt
+    Sv = np.dot(R, Pt) % 2
+
+    #Create Syndrome/error vector finding array
+    errorArray = np.zeros((8,8))
+    syndromeArray = np.zeros((8,4))
+    for i in range(8):
+        errorArray[i][i] = 1
+        syndromeArray[i] = np.dot(errorArray[i],Pt)
+
+    errorVector = None
+
+    if np.all(Sv==0):
+        print('No errors detected')
+        return(mapToMessage(R))
+    else:
+        for i in range(len(syndromeArray)):
+            if np.array_equal(syndromeArray[i].flatten(), Sv.flatten()):
+                errorVector = errorArray[i]
+                print('Error detected in position {}'.format(i))
+                return(mapToMessage((R - errorVector)%2))
+
+    print("Detected 2 errors, could not correct")
+    return mapToMessage(R)
+
+
+def translate(decodemsgs):
+    binstr = ''.join(str(x) for x in decodemsgs[0])
+    binstr = binstr + ''.join(str(x) for x in decodemsgs[1])
+    translatedcode = chr(int(binstr,2))
+
+    return translatedcode
+
+def processMessage(message):
+    print('Encoding and Decoding "{}"'.format(message))
+    decodemessage = ''
+    for letter in message:
+        A = getCodewords(letter)
+        code1 = noise(A[0], 10)
+        code2 = noise(A[1], 10)
+        print(code1, code2)
+        result = translate([decode(code1), decode(code2)])
+        decodemessage += result
+    print('\nYour message was {0}'.format(decodemessage))
+    return decodemessage
+
+processMessage("Hello")
