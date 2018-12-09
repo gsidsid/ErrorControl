@@ -17,3 +17,4 @@ slider.value = noisy*100;
 
 document.getElementById('paritycheck').value = res_a;
 document.getElementById('hadamard').value = res_b;
+document.getElementById('hamming').value = res_c;
