@@ -119,16 +119,16 @@ def decode(received):
 
     if np.all(Sv==0):
         print('No errors detected')
-        return(mapToMessage(R))
+        return(mapToMessage(R), "Not Corrected")
     else:
         for i in range(len(syndromeArray)):
             if np.array_equal(syndromeArray[i].flatten(), Sv.flatten()):
                 errorVector = errorArray[i]
                 print('Error detected in position {}'.format(i))
-                return(mapToMessage((R - errorVector)%2))
+                return(mapToMessage((R - errorVector)%2),"Corrected")
 
     print("Detected 2 errors, could not correct")
-    return mapToMessage(R)
+    return (mapToMessage(R), "Not Corrected")
 
 
 def translate(decodemsgs):
@@ -141,20 +141,27 @@ def translate(decodemsgs):
 def processMessage(message, probability):
     print('Encoding and Decoding "{}"'.format(message))
     decodemessage = ''
-    for letter in message:
+    correctedIndices = []
+    for index, letter in enumerate(message):
         A = getCodewords(letter)
         code1 = noise(A[0], probability)
         code2 = noise(A[1], probability)
         print(code1, code2)
-        result = translate([decode(code1), decode(code2)])
+        messagePart1, ifCorrected1 = decode(code1)
+        messagePart2, ifCorrected2 = decode(code2)
+        if (ifCorrected1 == "Corrected") or (ifCorrected2 == "Corrected"):
+            correctedIndices.append(index)
+        result = translate([messagePart1, messagePart2])
         decodemessage += result
     print('\nYour message was {0}'.format(decodemessage))
-    return decodemessage
+    return (decodemessage, correctedIndices)
 
 def hadamardDecoding(message, probability):
-    decodedMessage = processMessage(message, probability)
+    decodedMessage, correctedIndices = processMessage(message, probability)
     errorLocs = []
     for i in range(len(message)):
         if message[i] != decodedMessage[i]:
             errorLocs.append(i)
-    return [decodedMessage, errorLocs]
+    return [decodedMessage, errorLocs, correctedIndices]
+
+# print(hadamardDecoding("01234567", .05))
