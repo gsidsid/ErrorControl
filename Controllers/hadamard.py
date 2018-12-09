@@ -151,7 +151,7 @@ def processMessage(message, probability):
     print('\nYour message was {0}'.format(decodemessage))
     return decodemessage
 
-def returnMessage(message, probability):
+def hadamardDecoding(message, probability):
     decodedMessage = processMessage(message, probability)
     errorLocs = []
     for i in range(len(message)):
