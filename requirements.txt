@@ -24,6 +24,7 @@ jupyter-core==4.4.0
 kiwisolver==1.0.1
 MarkupSafe==1.0
 matplotlib==2.2.3
+mpmath==1.0.0
 nbformat==4.4.0
 numpy==1.15.2
 pandas==0.23.4
@@ -34,6 +35,7 @@ pytz==2018.5
 requests==2.19.1
 scipy==1.1.0
 six==1.11.0
+sympy==1.3
 traitlets==4.3.2
 travis==0.0.3
 urllib3==1.23

@@ -10,6 +10,18 @@ def decision(probability):
 def jam(codewords, noise):
     jammed = []
     for letter in codewords:
+        new = []
+        for bit_idx in range(len(letter)):
+            if decision(noise):
+                if letter[bit_idx] == 0:
+                    new.append('1')
+                elif letter[bit_idx] == 1:
+                    new.append('0')
+            else:
+                new.append(letter[bit_idx])
+        jammed.append(''.join(new))
+
+        """
         if decision(noise):
             controlledMessage = letter
             to_switch = random.randint(0,len(controlledMessage)-1)
@@ -23,6 +35,7 @@ def jam(codewords, noise):
                 jammed.append(''.join(new))
         else:
             jammed.append(letter)
+        """
     return jammed
 
 def parityCheck(message, noise=0.05):
