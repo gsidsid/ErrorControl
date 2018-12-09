@@ -36,12 +36,12 @@ def noise(codeword, probability):
     error = []
     errorcount = 0
     for x in range(0,6):
-        if random.randint(0,100) < probability:
+        if random.random() < probability:
             error = error + [x]
             R[x] = (R[x] + 1) % 2
             errorcount += 1
     print('Noisy Message: {} Error: Positions {}'.format(R, error))
-    return R
+    return [R, error]
 
 def decode(received):
     R = received
@@ -80,15 +80,18 @@ def decode(received):
 
     ## correcting error
     if elocation == -1:
-        print('ERROR NOT CORRECTED')
+        print('NO ERROR CORRECTED')
         R[elocation] = (R[elocation]) % 2
+        corrected=0
     else:
+        print('ERROR CORRECTED')
         R[elocation] = (R[elocation] + 1) % 2
-    print('Corrected Codeword: {}'.format(R))
+        corrected=1
+    print('Codeword: {}'.format(R))
 
     decoded = R[:4] # message is first four bits
 
-    return decoded
+    return [decoded, corrected]
 
 def translate(decodemsgs):
     binstr = ''.join(str(x) for x in decodemsgs[0])
@@ -97,16 +100,23 @@ def translate(decodemsgs):
 
     return translatedcode
 
-def processMessage(message):
+def hamming(message,probability):
     print('Encoding and Decoding "{}"'.format(message))
     decodemessage = ''
+    errorLocs = []
+    correctedlets = []
     for letter in message:
         A = getCodewords(letter)
-        code1 = noise(A[0], 10)
-        code2 = noise(A[1], 10)
-        result = translate([decode(code1), decode(code2)])
+        code1 = noise(A[0], probability)
+        code2 = noise(A[1], probability)
+        if decode(code1[0])[1] and decode(code2[0])[1]:
+            correctedlets += [letter]
+        result = translate([decode(code1[0])[0], decode(code2[0])[0]])
+        errors = [letter + ':{} {}'.format(code1[1],code2[1])]
+        errorLocs = errorLocs + errors
         decodemessage += result
     print('\nYour message was {0}'.format(decodemessage))
-    return decodemessage
+    print(errorLocs)
+    return [decodemessage, errorLocs, correctedlets]
 
-processMessage('Hello')
+hamming('Hello',.1)
