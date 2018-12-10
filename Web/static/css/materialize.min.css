@@ -7219,9 +7219,12 @@ input[type=range] {
     background-color: transparent;
     border: none;
     outline: none;
-    width: 75.3%;
+    width: 74.5%;
+    /* left: 44px; */
     margin: 15px 0;
     padding: 0;
+    /* margin-left: 0.5%; */
+    /* margin-right: 8%; */
 }
 
 input[type=range]:focus {
@@ -7229,7 +7232,7 @@ input[type=range]:focus {
 }
 
 input[type=range]+.thumb {
-    position: absolute;
+        position: absolute;
     top: 10px;
     left: 0;
     border: none;
@@ -7241,7 +7244,10 @@ input[type=range]+.thumb {
     -webkit-transform-origin: 50% 50%;
     transform-origin: 50% 50%;
     -webkit-transform: rotate(-45deg);
-    transform: rotate(-45deg)
+    transform: rotate(-45deg);
+    margin-top: 10%;
+    /* margin-right: -9%; */
+    left: 7px;
 }
 
 input[type=range]+.thumb .value {
