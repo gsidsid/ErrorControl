@@ -7219,9 +7219,9 @@ input[type=range] {
     background-color: transparent;
     border: none;
     outline: none;
-    width: 100%;
+    width: 75.3%;
     margin: 15px 0;
-    padding: 0
+    padding: 0;
 }
 
 input[type=range]:focus {
